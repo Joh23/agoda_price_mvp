@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>호텔픽 - 아고다 최저가 찾기</title>
+    <meta name="description" content="아고다 호텔 링크를 카드사 할인 링크로 변환하는 무료 서비스">
+    <meta name="keywords" content="아고다, 할인, 카드사, 호텔, 최저가">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    🏨 호텔픽
+                </div>
+                <nav class="nav">
+                    <span class="nav-item">아고다 최저가 찾기</span>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <h1 class="hero-title">
+                    아고다 링크를 <span class="text-highlight">카드사 할인</span>으로 바꿔보세요
+                </h1>
+                <p class="hero-subtitle">
+                    링크만 붙여넣으면 BC카드, 신한카드 등 모든 할인 링크를 한 번에 생성해드립니다
+                </p>
+
+                <!-- Search Form -->
+                <div class="search-container">
+                    <div class="search-form">
+                        <input
+                            type="url"
+                            id="agoda-url"
+                            class="search-input"
+                            placeholder="https://www.agoda.com/... 아고다 링크를 입력하세요"
+                            autocomplete="off"
+                        >
+                        <button id="convert-btn" class="search-button" type="button">
+                            변환하기
+                        </button>
+                    </div>
+                    <div id="error-message" class="error-message hidden"></div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="usage-guide">
+                    <h3 class="usage-title">💡 사용방법</h3>
+                    <ol class="usage-steps">
+                        <li>아고다에서 원하는 호텔의 링크를 복사하세요</li>
+                        <li>위 입력창에 링크를 붙여넣으세요</li>
+                        <li>'변환하기' 버튼을 클릭하세요</li>
+                        <li>생성된 할인 링크 중 원하는 것을 선택하세요</li>
+                    </ol>
+                </div>
+
+                <!-- Features -->
+                <div class="features">
+                    <div class="feature-item">
+                        <div class="feature-icon">💳</div>
+                        <div class="feature-text">카드사 할인</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔍</div>
+                        <div class="feature-text">검색경로 할인</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✈️</div>
+                        <div class="feature-text">항공사 제휴</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results-section" class="results-section hidden">
+                <!-- Hotel Info -->
+                <div id="hotel-info" class="hotel-info">
+                    <!-- 동적으로 생성됩니다 -->
+                </div>
+
+                <!-- Links Container -->
+                <div id="links-container" class="links-container">
+                    <!-- 동적으로 생성됩니다 -->
+                </div>
+
+                <!-- Reset Button -->
+                <div class="reset-container">
+                    <button id="reset-btn" class="btn-secondary">
+                        🔄 다시 검색하기
+                    </button>
+                </div>
+            </section>
+
+            <!-- Loading Overlay -->
+            <div id="loading-overlay" class="loading-overlay hidden">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">링크를 변환하고 있습니다...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">
+                    &copy; 2025 호텔픽. 아고다와는 별개의 독립적인 서비스입니다.
+                </p>
+                <div class="footer-links">
+                    <span class="footer-link">개인정보 수집 안 함</span>
+                    <span class="footer-separator">•</span>
+                    <span class="footer-link">100% 무료</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

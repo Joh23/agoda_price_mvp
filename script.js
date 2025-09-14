@@ -1,3 +1,22 @@
+// ===== A/B 테스트 헤드라인 데이터베이스 =====
+const HEADLINE_VARIANTS = [
+    {
+        id: 'emotional',
+        headline: "똑같은 호텔, 왜 비싸게 예약해요?",
+        subtitle: "링크만 붙여넣으면 끝, 숨겨진 할인까지 자동으로 찾아드려요"
+    },
+    {
+        id: 'personal',
+        headline: "당신의 아고다 링크가 더 <span class='text-highlight'>싸질 수 있어요</span>",
+        subtitle: "링크만 붙여넣으면 끝, 숨겨진 할인까지 자동으로 찾아드려요"
+    },
+    {
+        id: 'time_benefit',
+        headline: "<span class='text-highlight'>10초만에</span> 아고다 숨겨진 할인 찾기",
+        subtitle: "링크만 붙여넣으면 끝, 카드사별 최저가까지 자동 비교"
+    }
+];
+
 // ===== CID 데이터베이스 =====
 const CID_DATABASE = {
     // 카드사별 CID (실제 CID 값들 - 아고다줍줍/스캐너에서 검증된 값)
@@ -67,8 +86,63 @@ const elements = {
     resultsSection: document.getElementById('results-section'),
     hotelInfo: document.getElementById('hotel-info'),
     linksContainer: document.getElementById('links-container'),
-    loadingOverlay: document.getElementById('loading-overlay')
+    loadingOverlay: document.getElementById('loading-overlay'),
+    heroTitle: document.getElementById('hero-title'),
+    heroSubtitle: document.getElementById('hero-subtitle')
 };
+
+// ===== A/B 테스트 관리 =====
+let currentVariant = null;
+
+/**
+ * A/B 테스트 헤드라인 선택 및 적용
+ */
+function initializeABTest() {
+    // DOM 요소 존재 확인
+    const heroTitle = document.getElementById('hero-title');
+    const heroSubtitle = document.getElementById('hero-subtitle');
+
+    if (!heroTitle || !heroSubtitle) {
+        console.error('A/B 테스트 DOM 요소를 찾을 수 없습니다');
+        return;
+    }
+
+    // 로컬스토리지에서 기존 테스트 확인
+    let storedVariant = localStorage.getItem('ab_test_variant');
+
+    if (!storedVariant) {
+        // 새 방문자: 랜덤하게 배정
+        const randomIndex = Math.floor(Math.random() * HEADLINE_VARIANTS.length);
+        currentVariant = HEADLINE_VARIANTS[randomIndex];
+        localStorage.setItem('ab_test_variant', currentVariant.id);
+
+        // 개발 모드에서만 로그
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('A/B 테스트 배정:', currentVariant.id);
+        }
+    } else {
+        // 기존 방문자: 저장된 버전 사용
+        currentVariant = HEADLINE_VARIANTS.find(v => v.id === storedVariant) || HEADLINE_VARIANTS[0];
+    }
+
+    // 폴백 확인
+    if (!currentVariant) {
+        console.error('A/B 테스트 variant를 찾을 수 없습니다. 기본값 사용');
+        currentVariant = HEADLINE_VARIANTS[0];
+    }
+
+    // 헤드라인 적용
+    heroTitle.innerHTML = currentVariant.headline || '아고다 최저가를 찾아보세요';
+    heroSubtitle.textContent = currentVariant.subtitle || '다양한 할인 옵션을 한번에 확인하고 가장 저렴한 가격으로 예약하세요';
+
+    // 추적을 위한 데이터 속성 추가
+    heroTitle.setAttribute('data-variant', currentVariant.id);
+
+    // 개발 모드에서만 적용된 헤드라인 로그
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        console.log('A/B 테스트 헤드라인 적용됨:', currentVariant.headline);
+    }
+}
 
 // ===== 유틸리티 함수들 =====
 
@@ -426,13 +500,19 @@ async function convertAgodaUrl() {
         // 결과 렌더링
         renderResults(results);
 
-        // 성공 추적
+        // 성공 추적 (A/B 테스트 포함)
         console.log('변환 성공:', results.hotel.name);
         if (typeof gtag !== 'undefined') {
             gtag('event', 'convert_success', {
                 'event_category': 'engagement',
-                'event_label': 'agoda_to_cid'
+                'event_label': 'agoda_to_cid',
+                'ab_test_variant': currentVariant ? currentVariant.id : 'unknown'
             });
+        }
+
+        // 개발 모드에서만 A/B 테스트 변환 로그
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('A/B 테스트 변환:', currentVariant ? currentVariant.id : 'unknown');
         }
 
     } catch (error) {
@@ -480,12 +560,17 @@ function setupEventListeners() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('호텔픽 CID 변환기가 시작되었습니다.');
 
+    // A/B 테스트 초기화
+    initializeABTest();
+
     // 이벤트 리스너 설정
     setupEventListeners();
 
     // 개발 모드에서 테스트 URL 자동 입력 (배포 시 제거)
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         console.log('개발 모드: 테스트 URL 사용 가능');
+        console.log('현재 적용된 헤드라인:', document.getElementById('hero-title')?.innerHTML);
+        console.log('현재 적용된 서브타이틀:', document.getElementById('hero-subtitle')?.textContent);
         // elements.agodaUrl.value = 'https://www.agoda.com/grand-hyatt-seoul/hotel/seoul-kr.html?finalPriceView=1&isShowMobileAppPrice=false&cid=1844104&numberOfBedrooms=&familyMode=false&adults=2&children=0&rooms=1&maxRooms=0&checkIn=2024-12-25&checkOut=2024-12-26';
     }
 });

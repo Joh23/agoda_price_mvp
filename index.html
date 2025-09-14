@@ -35,11 +35,11 @@
         <div class="container">
             <!-- Hero Section -->
             <section class="hero-section">
-                <h1 class="hero-title">
-                    아고다 <span class="text-highlight">최저가</span>를 찾아보세요
+                <h1 class="hero-title" id="hero-title">
+                    <!-- A/B 테스트 헤드라인이 동적으로 생성됩니다 -->
                 </h1>
-                <p class="hero-subtitle">
-                    다양한 할인 옵션을 한번에 확인하고 가장 저렴한 가격으로 예약하세요
+                <p class="hero-subtitle" id="hero-subtitle">
+                    <!-- A/B 테스트 서브타이틀이 동적으로 생성됩니다 -->
                 </p>
 
                 <!-- Search Form -->
@@ -59,32 +59,75 @@
                     <div id="error-message" class="error-message hidden"></div>
                 </div>
 
-                <!-- Usage Guide -->
-                <div class="usage-guide">
-                    <h3 class="usage-title">사용방법</h3>
-                    <ol class="usage-steps">
-                        <li>아고다에서 호텔 링크를 복사하세요</li>
-                        <li>위 입력창에 링크를 붙여넣으세요</li>
-                        <li>'찾기' 버튼을 클릭하세요</li>
-                        <li>가장 저렴한 할인 옵션을 선택하세요</li>
-                    </ol>
-                </div>
+                <!-- Benefits Section (Envato Style) -->
+                <section class="benefits-section">
+                    <!-- Benefit 1 -->
+                    <div class="benefit-row">
+                        <div class="benefit-content">
+                            <h3 class="benefit-title">평균 15% 추가 절약</h3>
+                            <p class="benefit-description">같은 호텔이라도 예약 경로에 따라 가격이 달라집니다. 호텔픽은 28개의 할인 옵션을 한번에 비교해서 가장 저렴한 가격을 찾아드립니다.</p>
+                            <div class="benefit-quote">
+                                <p>"정말 10만원이나 싸게 나왔어요! 마음같아서는 소문 안났으면 좋겠네요"</p>
+                                <span>- 김○○</span>
+                            </div>
+                        </div>
+                        <div class="benefit-visual">
+                            <div class="price-comparison">
+                                <div class="price-item old-price">
+                                    <span class="price-label">일반 예약</span>
+                                    <span class="price-value">₩180,000</span>
+                                </div>
+                                <div class="arrow">→</div>
+                                <div class="price-item new-price">
+                                    <span class="price-label">호텔픽 사용</span>
+                                    <span class="price-value">₩156,000</span>
+                                </div>
+                                <div class="savings">₩24,000 절약!</div>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Features -->
-                <div class="features">
-                    <div class="feature-item">
-                        <div class="feature-text">카드사 할인</div>
-                        <div class="feature-desc">BC, 신한, 국민카드 등</div>
+                    <!-- Benefit 2 -->
+                    <div class="benefit-row reverse">
+                        <div class="benefit-visual">
+                            <div class="options-grid">
+                                <div class="option-item">BC카드</div>
+                                <div class="option-item">신한카드</div>
+                                <div class="option-item">국민카드</div>
+                                <div class="option-item">구글링크</div>
+                                <div class="option-item">네이버</div>
+                                <div class="option-item highlight">최저가!</div>
+                            </div>
+                        </div>
+                        <div class="benefit-content">
+                            <h3 class="benefit-title">28개 할인 옵션 한번에</h3>
+                            <p class="benefit-description">카드사 할인부터 검색경로 할인, 항공사 제휴까지 모든 할인 옵션을 자동으로 생성합니다. 더 이상 하나하나 찾아볼 필요 없어요.</p>
+                            <div class="benefit-quote">
+                                <p>"찾는 재미가 있네요! 이번엔 구글링크가 제일 쌌어요"</p>
+                                <span>- 최○○</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-text">검색경로 할인</div>
-                        <div class="feature-desc">구글, 네이버 등</div>
+
+                    <!-- Benefit 3 -->
+                    <div class="benefit-row">
+                        <div class="benefit-content">
+                            <h3 class="benefit-title">3초만에 완료</h3>
+                            <p class="benefit-description">복잡한 과정 없이 링크만 붙여넣으면 끝. 아고다에서 매번 달라지는 가격 때문에 고민할 필요도 없어요.</p>
+                            <div class="benefit-quote">
+                                <p>"아고다 들어갈 때마다 가격 바뀌는거 진짜 짜증이었는데 이제 한번에 끝"</p>
+                                <span>- 박○○</span>
+                            </div>
+                        </div>
+                        <div class="benefit-visual">
+                            <div class="steps-visual">
+                                <div class="step">1. 링크 복사</div>
+                                <div class="step">2. 붙여넣기</div>
+                                <div class="step">3. 완료!</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-text">항공사 제휴</div>
-                        <div class="feature-desc">대한항공, 아시아나 등</div>
-                    </div>
-                </div>
+                </section>
             </section>
 
             <!-- Results Section -->

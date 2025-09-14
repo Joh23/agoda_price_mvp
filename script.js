@@ -1,7 +1,8 @@
 // ===== CID 데이터베이스 =====
 const CID_DATABASE = {
-    // 카드사별 CID (실제 CID 값들 - 아고다줍줍/스캐너에서 수집)
+    // 카드사별 CID (실제 CID 값들 - 아고다줍줍/스캐너에서 검증된 값)
     cards: {
+        'agoda_scanner': { name: '아고다스캐너 기본', cid: '1748498' },
         'bc': { name: 'BC카드', cid: '1423688' },
         'kb': { name: '국민카드', cid: '1390466' },
         'shinhan': { name: '신한카드', cid: '1378149' },
@@ -41,21 +42,18 @@ const CID_DATABASE = {
     }
 };
 
-// 카테고리별 아이콘 및 이름 매핑
+// 카테고리별 이름 매핑
 const CATEGORY_CONFIG = {
     cards: {
-        icon: '💳',
-        name: '카드사 할인 링크',
+        name: '카드사 할인',
         description: '카드사별 특별 할인 혜택'
     },
     search: {
-        icon: '🔍',
-        name: '검색 경로별 링크',
+        name: '검색경로 할인',
         description: '검색 플랫폼별 할인 혜택'
     },
     airlines: {
-        icon: '✈️',
-        name: '항공사 제휴 링크',
+        name: '항공사 제휴',
         description: '항공사 마일리지 및 제휴 혜택'
     }
 };
@@ -187,15 +185,54 @@ function addCidToUrl(originalUrl, cidValue) {
     try {
         const url = new URL(originalUrl);
 
-        // 기존 CID 제거 후 새로운 CID 추가
+        // 개발 모드에서만 디버깅 로그
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('원본 URL:', originalUrl);
+            console.log('추가할 CID:', cidValue);
+
+            const originalCid = url.searchParams.get('cid');
+            const originalTag = url.searchParams.get('tag');
+            const originalDs = url.searchParams.get('ds');
+            console.log('기존 CID:', originalCid);
+            console.log('기존 tag:', originalTag);
+            console.log('기존 ds:', originalDs);
+        }
+
+        // CID 교체
         url.searchParams.delete('cid');
         url.searchParams.set('cid', cidValue);
 
-        return url.toString();
+        // ds 파라미터 추가 (아고다 내부 추적용, 각기 다른 랜덤값 생성)
+        if (!url.searchParams.has('ds')) {
+            // 16자리 랜덤 문자열 생성 (아고다 형식과 유사)
+            const dsValue = generateRandomString(16);
+            url.searchParams.set('ds', dsValue);
+        }
+
+        const newUrl = url.toString();
+
+        // 개발 모드에서만 결과 로그
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('생성된 URL:', newUrl);
+        }
+
+        return newUrl;
     } catch (error) {
         console.error('CID URL 생성 실패:', error);
         return null;
     }
+}
+
+/**
+ * 랜덤 문자열 생성 (ds 파라미터용)
+ */
+function generateRandomString(length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
 }
 
 /**
@@ -250,11 +287,11 @@ function toggleLoading(show = true) {
     if (show) {
         elements.loadingOverlay.classList.remove('hidden');
         elements.convertBtn.disabled = true;
-        elements.convertBtn.textContent = '변환 중...';
+        elements.convertBtn.textContent = '찾는 중...';
     } else {
         elements.loadingOverlay.classList.add('hidden');
         elements.convertBtn.disabled = false;
-        elements.convertBtn.textContent = '변환하기';
+        elements.convertBtn.textContent = '찾기';
     }
 }
 
@@ -287,7 +324,7 @@ function renderLinkCategory(category, links) {
                rel="noopener noreferrer"
                class="link-button"
                onclick="trackLinkClick('${category}', '${link.key}')">
-                새창에서 열기
+                예약하기
             </a>
         </div>
     `).join('');
@@ -295,7 +332,6 @@ function renderLinkCategory(category, links) {
     return `
         <div class="link-category">
             <h3 class="category-title">
-                <span class="category-icon">${config.icon}</span>
                 ${config.name}
             </h3>
             <div class="link-grid">
@@ -381,6 +417,11 @@ async function convertAgodaUrl() {
 
         // 모든 링크 생성
         const results = generateAllLinks(normalizedUrl);
+
+        // 디버깅 (개발 모드에서만)
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('생성된 링크 결과:', results);
+        }
 
         // 결과 렌더링
         renderResults(results);

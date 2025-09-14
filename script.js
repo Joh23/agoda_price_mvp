@@ -82,25 +82,31 @@ function validateAgodaUrl(url) {
         return { isValid: false, message: '링크를 입력해주세요.' };
     }
 
+    // URL 정규화 - 프로토콜이 없으면 https:// 추가
+    let normalizedUrl = url.trim();
+    if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+        normalizedUrl = 'https://' + normalizedUrl;
+    }
+
     // 기본 URL 형식 검증
     try {
-        new URL(url);
+        new URL(normalizedUrl);
     } catch {
         return { isValid: false, message: '올바른 URL 형식이 아닙니다.' };
     }
 
-    // 아고다 도메인 검증
+    // 아고다 도메인 검증 (정규화된 URL로 검증)
     const agodaPattern = /^https?:\/\/(www\.|m\.)?agoda\.com/i;
-    if (!agodaPattern.test(url)) {
+    if (!agodaPattern.test(normalizedUrl)) {
         return { isValid: false, message: '아고다 링크가 아닌 것 같습니다.' };
     }
 
     // 호텔 링크 검증 (상세 페이지인지)
-    if (!url.includes('/hotel/') && !url.includes('.html')) {
+    if (!normalizedUrl.includes('/hotel/') && !normalizedUrl.includes('.html')) {
         return { isValid: false, message: '호텔 상세 페이지 링크를 입력해주세요.' };
     }
 
-    return { isValid: true, message: '' };
+    return { isValid: true, message: '', normalizedUrl: normalizedUrl };
 }
 
 /**
@@ -370,8 +376,11 @@ async function convertAgodaUrl() {
         // 실제 변환은 즉시 실행되지만 UX를 위해 약간의 지연
         await new Promise(resolve => setTimeout(resolve, 500));
 
+        // 정규화된 URL 사용
+        const normalizedUrl = validation.normalizedUrl || url;
+
         // 모든 링크 생성
-        const results = generateAllLinks(url);
+        const results = generateAllLinks(normalizedUrl);
 
         // 결과 렌더링
         renderResults(results);

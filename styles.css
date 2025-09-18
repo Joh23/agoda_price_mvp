@@ -296,6 +296,7 @@ body {
 /* ===== Benefits Section (Real Envato Style) ===== */
 .benefits-section {
   margin: 80px 0;
+  position: relative;
 }
 
 .benefit-row {
@@ -305,7 +306,31 @@ body {
   align-items: center;
   max-width: 1200px;
   margin: 0 auto 80px auto;
-  padding: 0 24px;
+  padding: 32px 24px;
+  border-radius: 16px;
+  transition: all 0.4s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Default state - subtle styling */
+.benefit-row {
+  background: rgba(26, 26, 26, 0.3);
+  border: 1px solid transparent;
+}
+
+/* Hover state - dark highlight */
+.benefit-row:hover {
+  background: #1A1A1A;
+  border: 1px solid rgba(134, 252, 79, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  transform: translateY(-4px);
+}
+
+/* When one row is hovered, fade others */
+.benefits-section:hover .benefit-row:not(:hover) {
+  opacity: 0.4;
+  transform: scale(0.98);
 }
 
 .benefit-row.reverse {
@@ -327,48 +352,84 @@ body {
 .benefit-title {
   font-size: 36px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #B0B0B0;
   margin-bottom: 24px;
   line-height: 1.2;
+  transition: color 0.3s ease;
 }
 
 .benefit-description {
   font-size: 18px;
-  color: #B0B0B0;
+  color: #707070;
   line-height: 1.6;
   margin-bottom: 32px;
+  transition: color 0.3s ease;
+}
+
+/* Enhanced colors on hover */
+.benefit-row:hover .benefit-title {
+  color: #FFFFFF;
+}
+
+.benefit-row:hover .benefit-description {
+  color: #B0B0B0;
 }
 
 .benefit-quote {
-  background: #1A1A1A;
-  border-left: 4px solid #86FC4F;
+  background: rgba(26, 26, 26, 0.5);
+  border-left: 4px solid rgba(134, 252, 79, 0.6);
   padding: 20px 24px;
   border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .benefit-quote p {
   font-size: 16px;
-  color: #FFFFFF;
+  color: rgba(255, 255, 255, 0.7);
   font-style: italic;
   margin-bottom: 8px;
   line-height: 1.6;
+  transition: color 0.3s ease;
 }
 
 .benefit-quote span {
   font-size: 14px;
-  color: #86FC4F;
+  color: rgba(134, 252, 79, 0.7);
   font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+/* Enhanced quote on hover */
+.benefit-row:hover .benefit-quote {
+  background: #1A1A1A;
+  border-left-color: #86FC4F;
+}
+
+.benefit-row:hover .benefit-quote p {
+  color: #FFFFFF;
+}
+
+.benefit-row:hover .benefit-quote span {
+  color: #86FC4F;
 }
 
 .benefit-visual {
   padding: 32px;
-  background: #111111;
-  border: 1px solid #2A2A2A;
+  background: rgba(17, 17, 17, 0.6);
+  border: 1px solid rgba(42, 42, 42, 0.6);
   border-radius: 16px;
   min-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+}
+
+/* Enhanced visual on hover */
+.benefit-row:hover .benefit-visual {
+  background: #111111;
+  border-color: #2A2A2A;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* Price Comparison Visual */

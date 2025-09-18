@@ -433,11 +433,32 @@ function renderResults(data) {
     // 결과 섹션 표시
     elements.resultsSection.classList.remove('hidden');
 
+    // 혜택섹션을 결과 아래로 이동
+    moveBenefitsSectionAfterResults();
+
     // 결과 섹션으로 스크롤
     elements.resultsSection.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
     });
+}
+
+/**
+ * 검색 후 혜택섹션을 결과 아래로 이동
+ */
+function moveBenefitsSectionAfterResults() {
+    const benefitsSection = document.querySelector('.benefits-section');
+    const resultsSection = document.getElementById('results-section');
+
+    if (benefitsSection && resultsSection) {
+        // 혜택섹션을 results 섹션 다음에 이동
+        resultsSection.parentNode.insertBefore(benefitsSection, resultsSection.nextSibling);
+
+        // 개발 모드에서만 로그
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('혜택섹션을 결과 아래로 이동 완료');
+        }
+    }
 }
 
 /**
@@ -466,6 +487,27 @@ function resetResults() {
     elements.agodaUrl.value = '';
     elements.agodaUrl.focus();
     hideError();
+
+    // 혜택섹션을 원래 위치로 되돌리기
+    restoreBenefitsSectionPosition();
+}
+
+/**
+ * 혜택섹션을 원래 위치(검색창 아래)로 되돌리기
+ */
+function restoreBenefitsSectionPosition() {
+    const benefitsSection = document.querySelector('.benefits-section');
+    const searchContainer = document.querySelector('.search-container');
+
+    if (benefitsSection && searchContainer) {
+        // 혜택섹션을 search-container 다음에 이동
+        searchContainer.parentNode.insertBefore(benefitsSection, searchContainer.nextSibling);
+
+        // 개발 모드에서만 로그
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('혜택섹션을 원래 위치로 복원 완료');
+        }
+    }
 }
 
 // ===== 메인 변환 함수 =====

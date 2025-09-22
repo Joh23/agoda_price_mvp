@@ -668,6 +668,74 @@ body {
   transform: translateY(0);
 }
 
+/* ===== Clicked State Styles ===== */
+.link-item.clicked {
+  background: rgba(134, 252, 79, 0.08);
+  border: 1px solid rgba(134, 252, 79, 0.2);
+}
+
+.link-button.clicked {
+  background: #6B7280;
+  color: #D1D5DB;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.link-button.clicked:hover {
+  background: #6B7280;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ===== Search History ===== */
+.search-history-container {
+  margin-top: var(--space-6);
+  padding: var(--space-6);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.search-history-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.search-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.history-item {
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.history-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-green);
+  transform: translateY(-1px);
+}
+
+.history-hotel-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.history-dates {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
 /* ===== Reset Button ===== */
 .reset-container {
   text-align: center;
@@ -767,6 +835,79 @@ body {
 .footer-separator {
   color: var(--text-muted);
   font-weight: var(--font-bold);
+}
+
+/* ===== 사용자 경험 향상 ===== */
+
+/* 접근성 - 포커스 링 개선 */
+.link-button:focus,
+.history-item:focus,
+.search-input:focus,
+.search-button:focus {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+/* 부드러운 전환 효과 */
+.link-button {
+  transition: all 0.15s ease;
+}
+
+.link-button:active {
+  transform: scale(0.95);
+}
+
+.history-item {
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.history-item:hover,
+.history-item:focus {
+  background-color: var(--bg-hover);
+}
+
+/* 로딩 상태 개선 */
+.loading-overlay {
+  backdrop-filter: blur(4px);
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 클릭 피드백 애니메이션 */
+.link-button.clicked {
+  animation: clickFeedback 0.3s ease;
+}
+
+@keyframes clickFeedback {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* 검색 버튼 준비 상태 */
+.search-button.ready {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+  box-shadow: 0 4px 20px rgba(134, 252, 79, 0.3);
+  transform: scale(1.02);
+}
+
+/* 향상된 포커스 표시 */
+.search-input:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(134, 252, 79, 0.1);
+}
+
+/* 스크롤 개선 */
+html {
+  scroll-behavior: smooth;
 }
 
 /* ===== Responsive Design ===== */

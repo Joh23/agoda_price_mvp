@@ -53,6 +53,8 @@
 - [x] 새창에서 열기 기능 (완료)
 - [ ] 복사 기능 구현 (미구현)
 - [x] 동적 섹션 재배치 기능 (검색 후 UI 플로우 개선)
+- [ ] 링크 클릭 상태 추적 및 시각적 피드백 (신규)
+- [ ] 검색/필터 기능 구현 (신규)
 
 #### Day 13-14: 사용자 경험 개선
 - [x] 로딩 상태 표시 (완료)
@@ -60,13 +62,22 @@
 - [x] 엔바토 스타일 혜택 설명 섹션 (사용법 가이드 대체)
 - [x] 기본 기능 테스트 (완료)
 
-### 3주차: 테스트, 최적화 및 배포
-**목표**: 완전한 서비스 테스트 + GitHub Pages 배포
+### 3주차: 신기능 구현 및 테스트, 최적화 및 배포
+**목표**: 클릭 추적 & 검색 기능 구현 + 완전한 서비스 테스트 + GitHub Pages 배포
 
-#### Day 15-17: 테스트 및 버그 수정
+#### Day 15-16: 신기능 구현
+- [ ] 클릭 상태 추적 시스템 구현 (localStorage 기반)
+- [ ] 링크 클릭 시 시각적 피드백 (배경색/버튼 텍스트 변경)
+- [ ] 검색/필터 기능 구현 (카테고리별, 이름별 실시간 검색)
+- [ ] 검색어 하이라이팅 기능 추가
+- [ ] 세션 지속성 구현 (마지막 검색 결과 저장/복원)
+- [ ] 페이지 로드 시 이전 상태 자동 복원
+
+#### Day 17: 테스트 및 버그 수정
 - [ ] 다양한 아고다 URL 패턴 테스트
 - [ ] 모바일 디바이스 테스트
 - [ ] 브라우저 호환성 테스트 (Chrome, Safari, Firefox, Edge)
+- [ ] 새로운 기능들의 안정성 테스트
 - [ ] 버그 수정 및 안정성 개선
 
 #### Day 18-19: 최적화 및 SEO
@@ -121,38 +132,56 @@ HTML5 + CSS3 + JavaScript (ES6+)
 ### 1. CID 데이터 구조 설계
 ```javascript
 const CID_DATABASE = {
-  // 카드사별 CID (ds 파라미터 방식)
+  // 카드사별 CID (개별 호텔 링크)
   cards: {
-    'bc': { name: 'BC카드', cid: '2211799', affiliate: '2394660' },
-    'kb': { name: '국민카드', cid: '2211799', affiliate: '2463816' },
-    'shinhan': { name: '신한카드', cid: '2211799', affiliate: '2211800' },
-    'shinhan_master': { name: '신한(마스터)', cid: '2211799', affiliate: '2211800' },
-    'hyundai': { name: '현대카드', cid: '2211799', affiliate: '2394660' },
-    'hana': { name: '하나카드', cid: '2211799', affiliate: '2463816' },
-    'woori': { name: '우리카드', cid: '2211799', affiliate: '2211800' },
-    'toss': { name: '토스', cid: '2211799', affiliate: '2394660' },
-    'mastercard': { name: '마스터카드', cid: '2211799', affiliate: '2463816' },
-    'visa': { name: '비자카드', cid: '2211799', affiliate: '2211800' },
-    'unionpay': { name: '유니온페이', cid: '2211799', affiliate: '2394660' },
-    'kakaopay': { name: '카카오페이', cid: '2211799', affiliate: '2463816' }
+    'bc': { name: 'BC카드', cid: '1748498', ds: 'mEXb03rUcnVmoUh6' },
+    'kb': { name: '국민카드', cid: '1563295', ds: 'dCBy0Hp4jLiybNJD' },
+    'mastercard': { name: '마스터카드', cid: '1889572', ds: 'dudZ7mmatjNi%2Bh%2Bx' },
+    'visa': { name: '비자카드', cid: '1889319', ds: 'dCBy0Hp4jLiybNJD' },
+    'shinhan_master': { name: '신한(마스터)카드', cid: '1917257', ds: 'dCBy0Hp4jLiybNJD' },
+    'shinhan': { name: '신한카드', cid: '1760133', ds: 'cloRuSiGqIGm%2BaiD' },
+    'toss': { name: '토스', cid: '1917334', ds: 'HM7sFdE4oWUyA7vg' },
+    'hyundai': { name: '현대카드', cid: '1895693', ds: 'dCBy0Hp4jLiybNJD', tag: 'A100692912' },
+    'hana': { name: '하나카드', cid: '1729471', ds: 'SLDZljyao4FKVD4j' },
+    'woori_master': { name: '우리(마스터)카드', cid: '1932810', ds: 'dCBy0Hp4jLiybNJD' },
+    'woori': { name: '우리카드', cid: '1654104', ds: 'dCBy0Hp4jLiybNJD' },
+    'unionpay': { name: '유니온페이', cid: '1937712', ds: 'A9%2BvfjSULb9CJYdB', tag: 'A100692912' },
+    'kakaopay': { name: '카카오페이', cid: '1845094', ds: 'dCBy0Hp4jLiybNJD', tag: 'A100692912' }
   },
 
   // 검색 경로별 CID
   search: {
-    'google_map_1': { name: '구글지도1', cid: 'actual_cid_value' },
-    'google_map_2': { name: '구글지도2', cid: 'actual_cid_value' },
-    'google_map_3': { name: '구글지도3', cid: 'actual_cid_value' },
-    'google_search_1': { name: '구글검색1', cid: 'actual_cid_value' },
-    'google_search_2': { name: '구글검색2', cid: 'actual_cid_value' },
-    'google_search_3': { name: '구글검색3', cid: 'actual_cid_value' },
-    'naver_search_1': { name: '네이버검색1', cid: 'actual_cid_value' }
+    'google_search_a': { name: '구글검색 A', cid: '1908612', ds: 'XYhiaargcpjpOoh5' },
+    'google_search_b': { name: '구글검색 B', cid: '1922868', ds: 'VCHn6zbj84bVAIJH' },
+    'google_search_c': { name: '구글검색 C', cid: '1922887', ds: 'd2tYkTZGqFSAvjgL' },
+    'google_map_a': { name: '구글지도 A', cid: '1833981', ds: 'g01LTjgaPbp3MqQh' },
+    'google_map_b': { name: '구글지도 B', cid: '1917614', ds: 'V7Lu5Z%2FAnCSfQXu5' },
+    'google_map_c': { name: '구글지도 C', cid: '1829968', ds: 'GYoBerT774Z9GdGp' },
+    'naver_search': { name: '네이버 검색', cid: '1891504', ds: 'dCBy0Hp4jLiybNJD' }
   },
 
   // 항공사 제휴 CID
   airlines: {
-    'kal': { name: '대한항공', cid: 'actual_cid_value' },
-    'aar': { name: '아시아나항공', cid: 'actual_cid_value' },
-    'air_seoul': { name: '에어서울', cid: 'actual_cid_value' }
+    'kal': { name: '대한항공', cid: '1904827', ds: 'dCBy0Hp4jLiybNJD' },
+    'aar': { name: '아시아나항공', cid: '1806212', ds: 'dCBy0Hp4jLiybNJD' },
+    'air_seoul': { name: '에어서울', cid: '1800120', ds: 'dCBy0Hp4jLiybNJD' }
+  },
+
+  // 프로모션 페이지 링크 (개별 호텔 아님)
+  promotions: {
+    'bc_promo': { name: 'BC카드 프로모션', url: 'https://www.agoda.com/ko-kr/bccard', ds: 'sX5ob%2BwrbqTplcVP' },
+    'kb_promo': { name: '국민카드 프로모션', url: 'https://www.agoda.com/ko-kr/kbcard', ds: 'M0QEAaldWJ0DEWIA' },
+    'kal_promo': { name: '대한항공 프로모션', url: 'https://www.agoda.com/ko-kr/koreanair', ds: 'ByvdOjpCMW2aqiT1' },
+    'mastercard_promo': { name: '마스터카드 프로모션', url: 'https://www.agoda.com/ko-kr/krmastercard', ds: 'yA5LxYS369aEWiLZ' },
+    'visa_promo': { name: '비자카드 프로모션', url: 'https://www.agoda.com/ko-kr/visakorea', ds: 'XZ2PDGPlo77Mpbsa' },
+    'shinhan_promo': { name: '신한카드 프로모션', url: 'https://www.agoda.com/ko-kr/shinhancard', ds: 'ihM585JwfQ5Rb1N%2B' },
+    'shinhan_master_promo': { name: '신한마스터카드 프로모션', url: 'https://www.agoda.com/ko-kr/shinhanmaster', ds: 'uiIn7PkMF3HCM1hB' },
+    'unionpay_promo': { name: '유니온페이 프로모션', url: 'https://www.agoda.com/ko-kr/unionpayKR', ds: 'bi6gZyeTQB%2BvvyBJ' },
+    'woori_promo': { name: '우리카드 프로모션', url: 'https://www.agoda.com/ko-kr/wooricard', ds: 'PGN1Yx9djSRg5KO9' },
+    'kakaopay_promo': { name: '카카오페이 프로모션', url: 'https://www.agoda.com/ko-kr/kakaopaypromo', cid: '1845094', tag: 'A100692912', ds: 'RKO31PgDW5t%2B%2Fi%2Fj' },
+    'toss_promo': { name: '토스 프로모션', url: 'https://www.agoda.com/ko-kr/tossbank', ds: 'fOh%2FqTxaMo%2FxNt7D' },
+    'hana_promo': { name: '하나카드 프로모션', url: 'https://www.agoda.com/ko-kr/hanacard', ds: 'NYfiJ5siIc9SrPFg' },
+    'hyundai_promo': { name: '현대카드 프로모션', url: 'https://www.agoda.com/ko-kr/hyundaipromo', cid: '1895693', tag: 'A100692912', ds: 'tDyGDyLVj4f4zmi9' }
   }
 };
 ```
@@ -165,13 +194,52 @@ function validateAgodaUrl(url) {
   return agodaPattern.test(url);
 }
 
-// ds 파라미터 추가 함수 (새로운 CID 방식)
+// URL 변환 함수 (실제 CID 데이터 기반)
 function addCidToUrl(originalUrl, cidData) {
   try {
     const url = new URL(originalUrl);
-    // ds 파라미터: cid.affiliate.0.0.0 형식
-    const dsValue = `${cidData.cid}.${cidData.affiliate}.0.0.0`;
-    url.searchParams.set('ds', dsValue);
+
+    // CID 설정
+    if (cidData.cid) {
+      url.searchParams.set('cid', cidData.cid);
+    }
+
+    // DS 파라미터 설정
+    if (cidData.ds) {
+      url.searchParams.set('ds', cidData.ds);
+    }
+
+    // TAG 파라미터 설정 (현대, 유니온페이, 카카오페이)
+    if (cidData.tag) {
+      url.searchParams.set('tag', cidData.tag);
+    }
+
+    return url.toString();
+  } catch (error) {
+    return null;
+  }
+}
+
+// 프로모션 페이지 링크 생성 함수
+function createPromotionLink(promoData) {
+  try {
+    const url = new URL(promoData.url);
+
+    // DS 파라미터 설정
+    if (promoData.ds) {
+      url.searchParams.set('ds', promoData.ds);
+    }
+
+    // CID가 있는 경우 설정
+    if (promoData.cid) {
+      url.searchParams.set('cid', promoData.cid);
+    }
+
+    // TAG가 있는 경우 설정
+    if (promoData.tag) {
+      url.searchParams.set('tag', promoData.tag);
+    }
+
     return url.toString();
   } catch (error) {
     return null;
@@ -209,23 +277,144 @@ function convertAllLinks(originalUrl) {
     links: {}
   };
 
-  // 각 카테고리별 링크 생성
-  Object.keys(CID_DATABASE).forEach(category => {
+  // 개별 호텔 링크 생성 (cards, search, airlines)
+  ['cards', 'search', 'airlines'].forEach(category => {
     results.links[category] = [];
 
     Object.entries(CID_DATABASE[category]).forEach(([key, data]) => {
-      const convertedUrl = addCidToUrl(originalUrl, data.cid);
+      const convertedUrl = addCidToUrl(originalUrl, data);
       if (convertedUrl) {
         results.links[category].push({
           name: data.name,
           url: convertedUrl,
-          key: key
+          key: key,
+          clicked: false // 클릭 상태 추적
         });
       }
     });
   });
 
+  // 프로모션 페이지 링크 생성 (별도 처리)
+  results.links.promotions = [];
+  Object.entries(CID_DATABASE.promotions).forEach(([key, data]) => {
+    const promoUrl = createPromotionLink(data);
+    if (promoUrl) {
+      results.links.promotions.push({
+        name: data.name,
+        url: promoUrl,
+        key: key,
+        clicked: false,
+        isPromotion: true // 프로모션 페이지 구분
+      });
+    }
+  });
+
   return results;
+}
+
+// 클릭 상태 관리 함수
+function getClickedStatus(linkKey) {
+  const clicked = localStorage.getItem(`clicked_${linkKey}`);
+  return clicked === 'true';
+}
+
+function setClickedStatus(linkKey, clicked) {
+  localStorage.setItem(`clicked_${linkKey}`, clicked.toString());
+}
+
+// 검색/필터 함수
+function filterLinks(searchTerm, category = null) {
+  const results = document.querySelectorAll('.link-item');
+
+  results.forEach(item => {
+    const name = item.dataset.name.toLowerCase();
+    const itemCategory = item.dataset.category;
+
+    const matchesSearch = name.includes(searchTerm.toLowerCase());
+    const matchesCategory = !category || itemCategory === category;
+
+    if (matchesSearch && matchesCategory) {
+      item.style.display = 'block';
+      highlightSearchTerm(item, searchTerm);
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
+// 검색어 하이라이팅
+function highlightSearchTerm(element, term) {
+  if (!term) return;
+
+  const nameElement = element.querySelector('.link-name');
+  const text = nameElement.textContent;
+  const regex = new RegExp(`(${term})`, 'gi');
+  const highlighted = text.replace(regex, '<mark>$1</mark>');
+  nameElement.innerHTML = highlighted;
+}
+
+// 세션 지속성 관리
+function saveSearchResult(searchResult) {
+  localStorage.setItem('lastSearchResult', JSON.stringify({
+    ...searchResult,
+    timestamp: Date.now()
+  }));
+}
+
+function loadLastSearchResult() {
+  const saved = localStorage.getItem('lastSearchResult');
+  if (!saved) return null;
+
+  const result = JSON.parse(saved);
+  // 24시간 후 만료
+  if (Date.now() - result.timestamp > 24 * 60 * 60 * 1000) {
+    localStorage.removeItem('lastSearchResult');
+    return null;
+  }
+
+  return result;
+}
+
+function restoreSearchState() {
+  const lastResult = loadLastSearchResult();
+  if (lastResult) {
+    // 검색 결과 복원
+    displayResults(lastResult);
+    // 각 링크의 클릭 상태 복원
+    restoreClickStates(lastResult);
+  }
+}
+
+function restoreClickStates(searchResult) {
+  Object.keys(searchResult.links).forEach(category => {
+    searchResult.links[category].forEach(link => {
+      const clicked = getClickedStatus(link.key);
+      if (clicked) {
+        updateLinkClickState(link.key, true);
+      }
+    });
+  });
+}
+
+// 검색 히스토리 관리 (선택사항)
+function saveToSearchHistory(hotelInfo) {
+  let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+
+  // 중복 제거
+  history = history.filter(item => item.name !== hotelInfo.name);
+
+  // 새 검색 추가 (맨 앞에)
+  history.unshift({
+    ...hotelInfo,
+    timestamp: Date.now()
+  });
+
+  // 최대 5개까지만 저장
+  if (history.length > 5) {
+    history = history.slice(0, 5);
+  }
+
+  localStorage.setItem('searchHistory', JSON.stringify(history));
 }
 ```
 
@@ -316,6 +505,24 @@ function convertAllLinks(originalUrl) {
         <!-- 동적으로 생성됩니다 -->
       </div>
 
+      <!-- 검색 필터 -->
+      <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input type="text"
+                 id="search-input"
+                 placeholder="카드사, 항공사명으로 검색..."
+                 class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <select id="category-filter"
+                  class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">전체 카테고리</option>
+            <option value="cards">카드사 할인</option>
+            <option value="search">검색 경로</option>
+            <option value="airlines">항공사 제휴</option>
+            <option value="promotions">프로모션 페이지</option>
+          </select>
+        </div>
+      </div>
+
       <!-- 할인 링크 목록 -->
       <div id="links-container" class="space-y-6">
         <!-- 동적으로 생성됩니다 -->
@@ -341,6 +548,12 @@ function convertAllLinks(originalUrl) {
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // 페이지 로드 시 이전 상태 복원
+    document.addEventListener('DOMContentLoaded', function() {
+      restoreSearchState();
+    });
+  </script>
 </body>
 </html>
 ```
@@ -379,13 +592,15 @@ function convertAllLinks(originalUrl) {
 const CATEGORY_ICONS = {
   cards: '💳',
   search: '🔍',
-  airlines: '✈️'
+  airlines: '✈️',
+  promotions: '🎯'
 };
 
 const CATEGORY_NAMES = {
   cards: '카드사 할인 링크',
   search: '검색 경로별 링크',
-  airlines: '항공사 제휴 링크'
+  airlines: '항공사 제휴 링크',
+  promotions: '프로모션 페이지 링크'
 };
 ```
 
